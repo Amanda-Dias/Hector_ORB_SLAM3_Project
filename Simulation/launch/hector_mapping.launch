@@ -1,0 +1,37 @@
+<launch>
+ <!--<arg name="rviz" default="true" /> 
+ <param name="scan_topic" type="string" value="/scan" />
+ <param name="map_pub_topic" typ="string" value="/map" />
+ <param name="odom_frame" type="string" value="odom" /> -->
+
+<!-- Chama o launcher do Hector Slam -->
+
+  <!--<include file="$(find turtlebot3_slam)/launch/turtlebot3_hector.launch">
+    <arg name="map_size" value="400"/>
+  </include> -->
+   
+   <!--<arg name="rviz" default="true" />-->
+
+  <!-- Inicializa o RVIZ -->
+ <!-- <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz_mapping" respawn="true" args="-d $(find tcc)/config/mapping.rviz" /> -->
+    
+  <!-- Inclui o arquivo my_turtlebot_simulation -->
+   <include file="$(find simulation)/launch/my_turtlebot_simulation.launch"/>
+  <!--<include file="$(find simulation)/launch/my_turtlebot_simulation.launch">-->
+    <!--<arg name="rviz" value="$(arg rviz)"/> -->
+  <!--</include> -->
+
+<!-- Chama o launcher do Hector Slam -->
+
+    <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="pub_map_odom_transform" value="false"/>
+    <param name="map_update_interval" value="2.5"/> 
+    <remap from="scan" to="/scan"/>
+    <!--<remap from="map" to="/map"/> -->
+    <param name="odom_frame" value="odom" /> 
+    </node> 
+
+  
+  
+</launch>

@@ -1,0 +1,153 @@
+<launch>
+<!-- Para importar o mundo criado no Gazebo -->
+
+<!--from mundo import world -->
+
+<!-- Para incluir o launch file de calibração da câmera -->
+
+<!--<include file="$(find simulation)/launch/turtlebot3_camera_calibration.launch" /> -->
+
+  <!-- <include file="$(find simulation)/launch/turtlebot3_camera_calibration.launch">
+  <arg name="camera_name" value="my_camera" />
+  <arg name="namespace" value="/my_namespace" />
+</include>-->
+
+
+  <!-- Parâmetros do Gazebo -->
+
+  <arg name="world" default="$(find simulation)/mundo/novomundo.world" />  
+  <arg name="gazebo_gui" default="true"/> 
+
+  <!-- Parâmetros da Teleoperação da bag cnd_vel -->
+
+  <!--<arg name="rosbag_play" default="true" /> -->
+
+  <!-- Parâmetros da Teleoperação do Mouse -->
+
+  <arg name="mouse_teleop" default="true" />
+  <!--<arg name="mouse_teleop" default="false"/>-->
+
+
+  <!-- Parâmetros do Rviz -->
+
+  <arg name="rviz" default="true" />
+
+  <!-- Parâmetros do robô (modelo e posição no espaco) -->
+
+  <arg name="model" default="turtlebot3_waffle_pi"/>
+  <!--<arg name="x_pos" default="5.0"/>
+  <arg name="y_pos" default="5.0"/>
+  <arg name="z_pos" default="0.0"/> -->
+
+  <!-- Start the Gazebo simulation -->
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch"> 
+   <arg name="world_name" value="$(arg world)"/>
+   <arg name="paused" value="false"/>
+   <arg name="use_sim_time" value="true"/>
+   <arg name="headless" value="false"/>
+   <arg name="gui" value="$(arg gazebo_gui)"/>
+   <arg name="debug" value="false"/>
+  </include>
+
+<!-- robot_description_file -->
+  
+  <!-- o argumento robot_description_file especifica o caminho do arquivo URDF do robô TurtleBot3.Essa informação é usada mais tarde no arquivo launch 
+  para carregar o modelo do robô na simulação do Gazebo, através do comando, command, do parâmetro de nome: name="robot_description".-->
+  <arg name="robot_description_file" default="$(find turtlebot3_description)/urdf/$(arg model).urdf.xacro"/> 
+
+  <!-- robot_state_publisher node -->
+  
+  <!--o nó robot_state_publisher faz a publicação do estado do robô para outros nós e processos no ROS. 
+  Ele é utilizado para publicar a transformação entre as diferentes partes do modelo do robô.-->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0"/>
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg robot_description_file)"/>
+  </node>
+
+ <!-- Load the TurtleBot3 model into the simulation -->
+   
+   <!-- Essas duas tags são responsáveis por carregar a descrição do modelo do robô TurtleBot3 em formato URDF e 
+   carregar o modelo no ambiente de simulação Gazebo com as posições iniciais especificadas.-->
+
+   <!--comando gera a descrição completa do modelo do robô turtlebot3, o qual é definido o valor em 'model', em formato URDF e armazena-a 
+   no parâmetro "robot_description". -->    
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find tcc)/urdf/$(arg model).urdf.xacro"/> 
+  <!-- o pacote gazebo_ros é responsável por integrar o Gazebo com o ROS  e o comando "spawn_model" do pacote gazebo_ros é utilizado para carregar o modelo do robô no ambiente de simulação-->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf -model turtlebot3_$(arg model)  -param robot_description"/> 
+  <!--<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf -model turtlebot3_$(arg model) -x 0.0 -y 0.0 -z 0.0 -param robot_description"/>-->
+
+  <!--<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf -model turtlebot3_$(arg model) -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description"/> -->
+  <!-- Nó odom2path--> 
+
+   <!--<node name="odom2path" pkg="robot_localization" type="odometry_publisher" args="/odom /path 10" /> -->
+
+   <!-- Inicializa o RVIZ -->
+
+   <node name="rviz" pkg="rviz" type="rviz" args="-d '$(find tcc)/config/visualizationone.rviz'"/> 
+  
+  <!-- Teleoperação com mouse -->
+
+    <node if="$(arg mouse_teleop)" pkg="mouse_teleop" type="mouse_teleop.py" name="mouse_teleop">
+     <remap from="/mouse_vel" to="/cmd_vel" /> 
+        <param name="frequency" value="10" />
+    </node>
+
+    <!-- Teleoperação com a bag de velocidade -->
+<!--<node if="$(arg mouse_teleop)" pkg="rosbag" type="play" name="rosbag_play">
+    <param name="hz" value="10" />
+    <param name="delay" value="0" />
+    <param name="start_paused" value="false" />
+    <param name="topics" value="/cmd_vel:=/hector_orbslam3_cmd_vel" />
+    <param name="bags" value="/catkin_ws/src/hector_orbslam3_cmd_vel.bag" />
+</node>-->
+
+<!--<node if="$(arg mouse_teleop)" pkg="rosbag" type="play" name="rosbag_play">
+    <param name="hz" value="10" />
+    <param name="delay" value="0" />
+    <param name="start_paused" value="false" />
+    <param name="topics" value="/cmd_vel:=/hector_orbslam3_cmd_vel_reta" />
+    <param name="bags" value="/catkin_ws/src/hector_orbslam3_cmd_vel_reta.bag" />
+</node>-->
+
+<!--<node if="$(arg mouse_teleop)" pkg="rosbag" type="play" name="rosbag_play">
+    <param name="hz" value="10" />
+    <param name="delay" value="0" />
+    <param name="start_paused" value="false" />
+    <param name="topics" value="/cmd_vel:=/hector_orbslam3_cmd_vel_retangulo" />
+    <param name="bags" value="/catkin_ws/src/hector_orbslam3_cmd_vel_retangulo.bag" />
+</node>-->
+
+<!--<node if="$(arg mouse_teleop)" pkg="rosbag" type="play" name="rosbag_play">
+    <param name="hz" value="10" />
+    <param name="delay" value="0" />
+    <param name="start_paused" value="false" />
+    <param name="topics" value="/cmd_vel:=/hector_orbslam3_cmd_vel_circulo" />
+    <param name="bags" value="/catkin_ws/src/hector_orbslam3_cmd_vel_circulo.bag" />
+</node>-->
+
+<!--<node if="$(arg mouse_teleop)" pkg="rosbag" type="play" name="rosbag_play">
+    <param name="hz" value="10" />
+    <param name="delay" value="0" />
+    <param name="start_paused" value="false" />
+    <param name="topics" value="/cmd_vel:=/hector_orbslam3_cmd_vel_curva" />
+    <param name="bags" value="/catkin_ws/src/hector_orbslam3_cmd_vel_curva.bag" />
+</node>-->
+
+<!--<node if="$(arg mouse_teleop)" pkg="rosbag" type="play" name="rosbag_play">
+    <param name="hz" value="10" />
+    <param name="delay" value="0" />
+    <param name="start_paused" value="false" />
+    <param name="topics" value="/cmd_vel:=/hector_orbslam3_cmd_vel_quadrado" />
+    <param name="bags" value="/catkin_ws/src/hector_orbslam3_cmd_vel_quadrado.bag" />
+</node>-->
+
+  
+
+</launch>
+
+ 
+
+
+
+

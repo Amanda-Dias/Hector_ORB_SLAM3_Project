@@ -1,0 +1,10 @@
+<launch>
+ 
+ <!-- Adiciona o nó para executar o nodepath.py -->
+  <node name="nodepath" pkg="tcc" type="nodepath.py" output="screen"/>
+
+   <!-- Inclui o arquivo hector_mapping -->
+   <include file="$(find tcc)/launch/hector_mapping.launch"/>
+
+
+</launch>                

@@ -1,0 +1,33 @@
+<launch>
+  <!-- <launch xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
+  <arg name="model" default="$(find turtlebot3_description)/urdf/turtlebot3_waffle_pi.urdf.xacro" />
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(arg model)'"/>
+
+  <xacro:include filename="$(find turtlebot3_description)/urdf/turtlebot3_waffle_pi_camera.urdf.xacro" />
+
+  <!-- <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" /> -->
+
+<!-- Parâmetros da Câmera -->
+
+<arg name="camera_x" default="0.1"/>
+<arg name="camera_y" default="0.0"/>
+<arg name="camera_z" default="0.5"/>
+<arg name="camera_roll" default="0.0"/>
+<arg name="camera_pitch" default="-1.57"/>
+<arg name="camera_yaw" default="0.0"/>
+<arg name="camera_width" default="640"/>
+<arg name="camera_height" default="480"/> 
+
+<!-- Nodes de calibração da câmera -->
+  <node pkg="camera_calibration" type="cameracalibrator.py" name="camera_calibration" output="screen">
+    <param name="camera_name" value="camera" />
+    <param name="image_topic" value="/camera/rgb/image_raw" />
+    <param name="camera_info_url" value="file://$(find turtlebot3_description)/urdf/turtlebot3_waffle_pi_camera.yaml" />
+    <param name="queue_size" value="1" />
+    <param name="calibration_pattern" value="chessboard" />
+    <param name="square_size" value="0.025" />
+  </node>
+
+  <!-- your other nodes here -->
+</launch>
