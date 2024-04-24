@@ -19,4 +19,4 @@ The circular trajectory is in the bag: hector_orbslam3_circle.bag and its image 
 
 The rectangular trajectory is in the bag: hector_orbslam3_rectangular.bag and its image made on the ORB-SLAM3:
 
-![Rectangular](https://github.com/Amanda-Dias/Hector_ORB_SLAM3_Project/assets/65800660/55e2a1bd-5f16-472b-bd11-758a65e3e56a)
+![rectangular](https://github.com/Amanda-Dias/Hector_ORB_SLAM3_Project/assets/65800660/cf3d84f2-139a-4c5d-8b1a-0c79e5e7e61d)
