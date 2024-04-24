@@ -4,3 +4,5 @@ the trajectory of the straight line is from the bag hector_orbslam3_straightline
 ![straightlinegraphic](https://github.com/Amanda-Dias/ORBSLAM3_Hector_Project/assets/65800660/891b71f0-6b8d-4344-89bf-6648f55d8828)
 
 The circular trajectory is in the hector_orbslam3_circle.bag and its image made on the ORB-SLAM3.
+
+![circle graphic](https://github.com/Amanda-Dias/Hector_ORB_SLAM3_Project/assets/65800660/650de0b1-424a-4720-8fb8-a8dfa14b57a4)
